@@ -1,4 +1,5 @@
-from conans import ConanFile, CMake
+from conan import ConanFile
+from conan.tools.cmake import CMake
 
 
 class KamiConan(ConanFile):
@@ -44,8 +45,8 @@ class KamiConan(ConanFile):
 
 
     def requirements(self):
-        self.requires("fmt/9.0.0")
-        self.requires("spdlog/1.10.0")
+        self.requires("fmt/9.1.0")
+        self.requires("spdlog/1.11.0")
         self.requires("cli11/2.2.0")
         self.requires("neargye-semver/0.3.0")
         self.requires("gtest/cci.20210126")
