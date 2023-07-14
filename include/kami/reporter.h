@@ -29,13 +29,12 @@
 #define KAMI_REPORTER_H
 //! @endcond
 
-#include <memory>
-#include <vector>
-
-#include <nlohmann/json.hpp>
-
 #include <kami/agent.h>
 #include <kami/model.h>
+
+#include <memory>
+#include <nlohmann/json.hpp>
+#include <vector>
 
 namespace kami {
 
@@ -48,15 +47,14 @@ namespace kami {
     /**
      * @brief A superclass for all reporting agents
      *
-     * @details All reporting agents should subclass the `ReportingAgent` class. At a minimum,
-     * subclasses must implement the `step()` function, to execute a single time step for each
-     * agent.
+     * @details All reporting agents should subclass the `ReportingAgent` class.
+     * At a minimum, subclasses must implement the `step()` function, to execute
+     * a single time step for each agent.
      *
      * @see `Agent`, `StagedAgent`
      */
-    class LIBKAMI_EXPORT ReporterAgent
-            : public Agent {
-    public:
+    class LIBKAMI_EXPORT ReporterAgent : public Agent {
+       public:
         /**
          * @brief Collect the current state of the agent
          *
@@ -78,8 +76,9 @@ namespace kami {
         /**
          * @brief Execute a time-step for the agent
          *
-         * @details This function should step the agent instance.  Any activities that the
-         * agent should perform as part of its time step should be in this function.
+         * @details This function should step the agent instance.  Any
+         * activities that the agent should perform as part of its time step
+         * should be in this function.
          *
          * @param model a reference copy of the model
          *
@@ -87,9 +86,10 @@ namespace kami {
          */
         virtual AgentID step(std::shared_ptr<ReporterModel> model) = 0;
 
-    private:
+       private:
         // This should be uncallable, but knocks out the inherited method.
-        AgentID step(std::shared_ptr<Model> model) override;;
+        AgentID step(std::shared_ptr<Model> model) override;
+        ;
 
         int _step_counter = 0;
     };
@@ -99,9 +99,8 @@ namespace kami {
      *
      * @see `Model`
      */
-    class LIBKAMI_EXPORT ReporterModel
-            : public Model {
-    public:
+    class LIBKAMI_EXPORT ReporterModel : public Model {
+       public:
         /**
          * @brief Constructor
          */
@@ -135,9 +134,10 @@ namespace kami {
         /**
          * @brief Execute a single time step of the model
          *
-         * @details This method will collect all the `Agent`s in the `Population` associated
-         * with the model and pass them to the associated `Scheduler` for stepping.  After scheduling,
-         * this method will run the collect() for the `Reporter` associated with this model.
+         * @details This method will collect all the `Agent`s in the
+         * `Population` associated with the model and pass them to the
+         * associated `Scheduler` for stepping.  After scheduling, this method
+         * will run the collect() for the `Reporter` associated with this model.
          *
          * @returns a shared pointer to the model instance
          */
@@ -146,15 +146,15 @@ namespace kami {
         /**
          * @brief Get the current report
          *
-         * @details This method will return an object containg the data collected to that
-         * point in the simulation.
+         * @details This method will return an object containg the data
+         * collected to that point in the simulation.
          *
-         * @returns a unique pointer to a `nlohmann::json` object representing the current report
+         * @returns a unique pointer to a `nlohmann::json` object representing
+         * the current report
          */
         std::unique_ptr<nlohmann::json> report();
 
-    protected:
-
+       protected:
         /**
          * @brief The current report
          */
@@ -167,12 +167,13 @@ namespace kami {
     };
 
     /**
-     * @brief A `Reporter` is a module that works with `ReporterAgent` and `ReporterModel`
-     * to collect information about the state of the model for later analysis
+     * @brief A `Reporter` is a module that works with `ReporterAgent` and
+     * `ReporterModel` to collect information about the state of the model for
+     * later analysis
      */
     class LIBKAMI_EXPORT Reporter
-            : public std::enable_shared_from_this<Reporter> {
-    public:
+        : public std::enable_shared_from_this<Reporter> {
+       public:
         /**
          * @brief Constructor
          */
@@ -199,7 +200,8 @@ namespace kami {
          *
          * @returns a copy of the current report
          */
-        std::unique_ptr<nlohmann::json> collect(const std::shared_ptr<ReporterModel>& model);
+        std::unique_ptr<nlohmann::json> collect(
+            const std::shared_ptr<ReporterModel>& model);
 
         /**
          * @brief Collect the current state of the model
@@ -212,11 +214,9 @@ namespace kami {
          *
          * @returns a copy of the current report
          */
-        std::unique_ptr<nlohmann::json>
-        collect(
-                const std::shared_ptr<ReporterModel>& model,
-                const std::shared_ptr<Population>& pop
-        );
+        std::unique_ptr<nlohmann::json> collect(
+            const std::shared_ptr<ReporterModel>& model,
+            const std::shared_ptr<Population>& pop);
 
         /**
          * @brief Collect the current state of the model
@@ -229,11 +229,9 @@ namespace kami {
          *
          * @returns a copy of the current report
          */
-        std::unique_ptr<nlohmann::json>
-        collect(
-                const std::shared_ptr<ReporterModel>& model,
-                const std::unique_ptr<std::vector<AgentID>>& agent_list
-        );
+        std::unique_ptr<nlohmann::json> collect(
+            const std::shared_ptr<ReporterModel>& model,
+            const std::unique_ptr<std::vector<AgentID>>& agent_list);
 
         /**
          * @brief Collect the report
@@ -245,15 +243,16 @@ namespace kami {
          *
          * @returns a copy of the current report
          */
-        std::unique_ptr<nlohmann::json> report(const std::shared_ptr<ReporterModel>& model);
+        std::unique_ptr<nlohmann::json> report(
+            const std::shared_ptr<ReporterModel>& model);
 
-    protected:
+       protected:
         /**
          * @brief A vector of the the report collected so far
          */
         std::unique_ptr<std::vector<nlohmann::json>> _report_data = nullptr;
     };
 
-}
+}  // namespace kami
 
-#endif //KAMI_REPORTER_H
+#endif  // KAMI_REPORTER_H

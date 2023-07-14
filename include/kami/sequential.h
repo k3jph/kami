@@ -29,13 +29,13 @@
 #define KAMI_SEQUENTIAL_H
 //! @endcond
 
-#include <memory>
-#include <vector>
-
 #include <kami/agent.h>
 #include <kami/kami.h>
 #include <kami/model.h>
 #include <kami/scheduler.h>
+
+#include <memory>
+#include <vector>
 
 namespace kami {
 
@@ -47,9 +47,8 @@ namespace kami {
      * That order is preserved between calls to `step()` but may be modified by
      * `addAgent()` or `deleteAgent()`.
      */
-    class LIBKAMI_EXPORT SequentialScheduler
-            : public Scheduler {
-    public:
+    class LIBKAMI_EXPORT SequentialScheduler : public Scheduler {
+       public:
         /**
          * @brief Execute a single time step.
          *
@@ -62,7 +61,8 @@ namespace kami {
          *
          * @returns returns vector of agents successfully stepped
          */
-        std::unique_ptr<std::vector<AgentID>> step(std::shared_ptr<Model> model) override;
+        std::unique_ptr<std::vector<AgentID>> step(
+            std::shared_ptr<Model> model) override;
 
         /**
          * @brief Execute a single time step for a `ReporterModel`
@@ -76,7 +76,8 @@ namespace kami {
          *
          * @returns returns vector of agents successfully stepped
          */
-        std::unique_ptr<std::vector<AgentID>> step(std::shared_ptr<ReporterModel> model) override;
+        std::unique_ptr<std::vector<AgentID>> step(
+            std::shared_ptr<ReporterModel> model) override;
 
         /**
          * @brief Execute a single time step.
@@ -91,11 +92,9 @@ namespace kami {
          *
          * @returns returns vector of agents successfully stepped
          */
-        std::unique_ptr<std::vector<AgentID>>
-        step(
-                std::shared_ptr<Model> model,
-                std::unique_ptr<std::vector<AgentID>> agent_list
-        ) override;
+        std::unique_ptr<std::vector<AgentID>> step(
+            std::shared_ptr<Model> model,
+            std::unique_ptr<std::vector<AgentID>> agent_list) override;
 
         /**
          * @brief Execute a single time step for a `ReporterModel`
@@ -110,11 +109,9 @@ namespace kami {
          *
          * @returns returns vector of agents successfully stepped
          */
-        std::unique_ptr<std::vector<AgentID>>
-        step(
-                std::shared_ptr<ReporterModel> model,
-                std::unique_ptr<std::vector<AgentID>> agent_list
-        ) override;
+        std::unique_ptr<std::vector<AgentID>> step(
+            std::shared_ptr<ReporterModel> model,
+            std::unique_ptr<std::vector<AgentID>> agent_list) override;
     };
 
 }  // namespace kami

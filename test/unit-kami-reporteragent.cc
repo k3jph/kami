@@ -23,21 +23,19 @@
  * SOFTWARE.
  */
 
-#include <memory>
-
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 #include <kami/agent.h>
 #include <kami/model.h>
 #include <kami/reporter.h>
 
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
+#include <memory>
 
 using namespace kami;
 using namespace std;
 
-class TestAgent
-        : public ReporterAgent {
-public:
+class TestAgent : public ReporterAgent {
+   public:
     AgentID step(shared_ptr<ReporterModel> model) override {
         return get_agent_id();
     }
@@ -52,31 +50,24 @@ public:
     }
 };
 
-class TestModel
-        : public ReporterModel {
-public:
+class TestModel : public ReporterModel {
+   public:
     std::unique_ptr<nlohmann::json> collect() override {
         return std::make_unique<nlohmann::json>();
     }
 };
 
-class ReporterAgentTest
-        : public ::testing::Test {
-protected:
+class ReporterAgentTest : public ::testing::Test {
+   protected:
     TestAgent agent_foo;
     TestAgent agent_bar;
     shared_ptr<TestModel> model_world = nullptr;
 
-    void SetUp() override {
-        model_world = make_shared<TestModel>();
-    }
+    void SetUp() override { model_world = make_shared<TestModel>(); }
 };
 
 TEST(ReporterAgent, DefaultConstructor) {
-    EXPECT_NO_THROW(
-            const TestAgent agent_baz;
-            const TestAgent agent_qux;
-    );
+    EXPECT_NO_THROW(const TestAgent agent_baz; const TestAgent agent_qux;);
 }
 
 TEST_F(ReporterAgentTest, equivalance) {
@@ -95,8 +86,10 @@ TEST_F(ReporterAgentTest, step) {
 }
 
 TEST_F(ReporterAgentTest, collect) {
-    EXPECT_EQ(agent_foo.collect()->dump(), "{\"fname\":\"Gus\",\"lname\":\"Fring\"}");
-    EXPECT_NE(agent_bar.collect()->dump(), "{\"fname\":\"Hank\",\"lname\":\"Schrader\"}");
+    EXPECT_EQ(agent_foo.collect()->dump(),
+              "{\"fname\":\"Gus\",\"lname\":\"Fring\"}");
+    EXPECT_NE(agent_bar.collect()->dump(),
+              "{\"fname\":\"Hank\",\"lname\":\"Schrader\"}");
 }
 
 TEST_F(ReporterAgentTest, equality) {
@@ -109,11 +102,7 @@ TEST_F(ReporterAgentTest, inequality) {
     EXPECT_FALSE(agent_bar != agent_bar);
 }
 
-int main(
-        int argc,
-        char** argv
-) {
+int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
-

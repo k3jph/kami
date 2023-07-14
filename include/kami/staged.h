@@ -29,52 +29,47 @@
 #define KAMI_STAGED_H
 //! @endcond
 
-#include <memory>
-#include <vector>
-
 #include <kami/agent.h>
 #include <kami/scheduler.h>
 #include <kami/sequential.h>
+
+#include <memory>
+#include <vector>
 
 namespace kami {
 
     /**
      * @brief Will execute all agent steps in a sequential order.
      *
-     * @details A sequential scheduler will iterate over the agents assigned to the scheduler
-     * and call their `step()` function in a sequential order. That order is
-     * preserved between calls to `step()` but may be modified by `add_agent()` or
-     * `delete_agent()`.
+     * @details A sequential scheduler will iterate over the agents assigned to
+     * the scheduler and call their `step()` function in a sequential order.
+     * That order is preserved between calls to `step()` but may be modified by
+     * `add_agent()` or `delete_agent()`.
      */
-    class LIBKAMI_EXPORT StagedScheduler
-            : public SequentialScheduler {
-    public:
+    class LIBKAMI_EXPORT StagedScheduler : public SequentialScheduler {
+       public:
         /**
          * @brief Execute a single time step
          *
-         * @details This method will step through the list of Agents in the scheduler's
-         * internal queue and execute the `Agent::step()` method for  each `Agent`
-         * in the same order.  Finally, it will execute the  `Agent::advance()`
-         * method for each Agent in the same order.
+         * @details This method will step through the list of Agents in the
+         * scheduler's internal queue and execute the `Agent::step()` method for
+         * each `Agent` in the same order.  Finally, it will execute the
+         * `Agent::advance()` method for each Agent in the same order.
          *
          * @param model a reference copy of the model
          * @param agent_list list of agents to execute the step
          *
          * @returns returns vector of agents successfully stepped
          */
-        std::unique_ptr<std::vector<AgentID>>
-        step(
-                std::shared_ptr<Model> model,
-                std::unique_ptr<std::vector<AgentID>> agent_list
-        ) override;
+        std::unique_ptr<std::vector<AgentID>> step(
+            std::shared_ptr<Model> model,
+            std::unique_ptr<std::vector<AgentID>> agent_list) override;
 
-        std::unique_ptr<std::vector<AgentID>>
-        step(
-                std::shared_ptr<ReporterModel> model,
-                std::unique_ptr<std::vector<AgentID>> agent_list
-        ) override;
+        std::unique_ptr<std::vector<AgentID>> step(
+            std::shared_ptr<ReporterModel> model,
+            std::unique_ptr<std::vector<AgentID>> agent_list) override;
 
-    private:
+       private:
         /**
          * @brief Advance a single time step.
          *
@@ -87,9 +82,11 @@ namespace kami {
          *
          * @returns returns vector of agents successfully advanced
          */
-        std::unique_ptr<std::vector<AgentID>> advance(std::shared_ptr<Model> model);
+        std::unique_ptr<std::vector<AgentID>> advance(
+            std::shared_ptr<Model> model);
 
-        std::unique_ptr<std::vector<AgentID>> advance(std::shared_ptr<ReporterModel> model);
+        std::unique_ptr<std::vector<AgentID>> advance(
+            std::shared_ptr<ReporterModel> model);
 
         /**
          * @brief Advance a single time step.
@@ -104,11 +101,9 @@ namespace kami {
          *
          * @returns returns vector of agents successfully advanced
          */
-        std::unique_ptr<std::vector<AgentID>>
-        advance(
-                std::shared_ptr<Model> model,
-                std::unique_ptr<std::vector<AgentID>> agent_list
-        );
+        std::unique_ptr<std::vector<AgentID>> advance(
+            std::shared_ptr<Model> model,
+            std::unique_ptr<std::vector<AgentID>> agent_list);
     };
 
 }  // namespace kami

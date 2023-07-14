@@ -23,16 +23,15 @@
  * SOFTWARE.
  */
 
-#include <algorithm>
-#include <memory>
-#include <unordered_map>
-#include <vector>
-
-#include <nlohmann/json.hpp>
-
 #include <kami/population.h>
 #include <kami/reporter.h>
 #include <kami/scheduler.h>
+
+#include <algorithm>
+#include <memory>
+#include <nlohmann/json.hpp>
+#include <unordered_map>
+#include <vector>
 
 namespace kami {
 
@@ -44,19 +43,20 @@ namespace kami {
     std::shared_ptr<Model> ReporterModel::step() {
         _step_count++;
 
-        auto ret = _sched->step(std::static_pointer_cast<ReporterModel>(shared_from_this()));
-        auto rpt = _rpt->collect(std::static_pointer_cast<ReporterModel>(shared_from_this()));
+        auto ret = _sched->step(
+            std::static_pointer_cast<ReporterModel>(shared_from_this()));
+        auto rpt = _rpt->collect(
+            std::static_pointer_cast<ReporterModel>(shared_from_this()));
 
         return shared_from_this();
     }
 
     std::unique_ptr<nlohmann::json> ReporterModel::report() {
-        return std::move(_rpt->report(std::static_pointer_cast<ReporterModel>(shared_from_this())));
+        return std::move(_rpt->report(
+            std::static_pointer_cast<ReporterModel>(shared_from_this())));
     }
 
-    inline unsigned int ReporterModel::get_step_id() {
-        return _step_count;
-    }
+    inline unsigned int ReporterModel::get_step_id() { return _step_count; }
 
     Reporter::Reporter() {
         _report_data = std::make_unique<std::vector<nlohmann::json>>();
@@ -69,47 +69,43 @@ namespace kami {
         return shared_from_this();
     }
 
-    std::unique_ptr<nlohmann::json>
-    Reporter::collect(const std::shared_ptr<ReporterModel>& model) {
+    std::unique_ptr<nlohmann::json> Reporter::collect(
+        const std::shared_ptr<ReporterModel>& model) {
         auto pop = model->get_population();
         return collect(model, pop);
     }
 
-    std::unique_ptr<nlohmann::json>
-    Reporter::collect(
-            const std::shared_ptr<ReporterModel>& model,
-            const std::shared_ptr<Population>& pop
-    ) {
+    std::unique_ptr<nlohmann::json> Reporter::collect(
+        const std::shared_ptr<ReporterModel>& model,
+        const std::shared_ptr<Population>& pop) {
         auto agent_list = pop->get_agent_list();
         return collect(model, agent_list);
     }
 
-    std::unique_ptr<nlohmann::json>
-    Reporter::collect(
-            const std::shared_ptr<ReporterModel>& model,
-            const std::unique_ptr<std::vector<AgentID>>& agent_list
-    ) {
+    std::unique_ptr<nlohmann::json> Reporter::collect(
+        const std::shared_ptr<ReporterModel>& model,
+        const std::unique_ptr<std::vector<AgentID>>& agent_list) {
         auto collection_array = std::vector<nlohmann::json>();
 
-        for (auto& agent_id : *agent_list) {
+        for(auto& agent_id : *agent_list) {
             auto agent_data = nlohmann::json();
-            auto agent = std::static_pointer_cast<ReporterAgent>(model->get_population()->get_agent_by_id(agent_id));
+            auto agent = std::static_pointer_cast<ReporterAgent>(
+                model->get_population()->get_agent_by_id(agent_id));
 
             agent_data["agent_id"] = agent_id.to_string();
 
             auto agent_collection = agent->collect();
-            if (agent_collection)
-                agent_data["data"] = *agent_collection;
+            if(agent_collection) agent_data["data"] = *agent_collection;
 
             collection_array.push_back(agent_data);
         }
         auto model_data = model->collect();
-        auto agent_collection = std::make_unique<nlohmann::json>(collection_array);
+        auto agent_collection =
+            std::make_unique<nlohmann::json>(collection_array);
         auto collection = std::make_unique<nlohmann::json>();
 
         (*collection)["step_id"] = model->get_step_id();
-        if (model_data)
-            (*collection)["model_data"] = *model_data;
+        if(model_data) (*collection)["model_data"] = *model_data;
         (*collection)["agent_data"] = *agent_collection;
 
         _report_data->push_back(*collection);
@@ -117,7 +113,8 @@ namespace kami {
         return std::move(collection);
     }
 
-    std::unique_ptr<nlohmann::json> Reporter::report(const std::shared_ptr<ReporterModel>& model) {
+    std::unique_ptr<nlohmann::json> Reporter::report(
+        const std::shared_ptr<ReporterModel>& model) {
         auto json_data = std::make_unique<nlohmann::json>(*_report_data);
         return std::move(json_data);
     }
@@ -125,6 +122,5 @@ namespace kami {
     AgentID ReporterAgent::step(std::shared_ptr<Model> model) {
         return get_agent_id();
     }
-
 
 }  // namespace kami

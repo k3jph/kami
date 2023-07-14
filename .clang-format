@@ -1,0 +1,13 @@
+﻿---
+BasedOnStyle: Google
+BreakBeforeBraces: Attach
+IncludeBlocks: Regroup
+IndentWidth: '4'
+NamespaceIndentation: All
+ReflowComments: 'true'
+SortUsingDeclarations: 'true'
+SpaceBeforeParens: Never
+TabWidth: '4'
+UseTab: Never
+
+...

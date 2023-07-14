@@ -23,8 +23,7 @@
  * SOFTWARE.
  */
 
-#include <memory>
-
+#include <gtest/gtest.h>
 #include <kami/agent.h>
 #include <kami/error.h>
 #include <kami/model.h>
@@ -32,35 +31,27 @@
 #include <kami/population.h>
 #include <kami/sequential.h>
 
-#include <gtest/gtest.h>
+#include <memory>
 
 using namespace kami;
 using namespace kami::error;
 using namespace std;
 
-class TestAgent
-        : public Agent {
-public:
-    AgentID step(shared_ptr<Model> model) override {
-        return get_agent_id();
-    }
+class TestAgent : public Agent {
+   public:
+    AgentID step(shared_ptr<Model> model) override { return get_agent_id(); }
 };
 
-class TestModel
-        : public Model {
-public:
-    shared_ptr<Model> step() final {
-        return shared_from_this();
-    }
+class TestModel : public Model {
+   public:
+    shared_ptr<Model> step() final { return shared_from_this(); }
 };
 
 TEST(Model, DefaultConstructor) {
     // There is really no way this can go wrong, but
     // we add this check anyway in case of future
     // changes.
-    EXPECT_NO_THROW(
-            const TestModel model_foo
-    );
+    EXPECT_NO_THROW(const TestModel model_foo);
 }
 
 TEST(Model, set_population) {
@@ -75,7 +66,8 @@ TEST(Model, get_population) {
     auto model_foo = make_shared<TestModel>();
     auto pop_foo = make_shared<Population>();
 
-    EXPECT_THROW(auto pop_nul = model_foo->get_population(), ResourceNotAvailable);
+    EXPECT_THROW(auto pop_nul = model_foo->get_population(),
+                 ResourceNotAvailable);
 
     auto pop_bar = model_foo->set_population(pop_foo);
     auto pop_baz = model_foo->get_population();
@@ -97,7 +89,8 @@ TEST(Model, get_scheduler) {
     auto model_foo = make_shared<TestModel>();
     auto sched_foo = make_shared<SequentialScheduler>();
 
-    EXPECT_THROW(auto sched_nul = model_foo->get_scheduler(), ResourceNotAvailable);
+    EXPECT_THROW(auto sched_nul = model_foo->get_scheduler(),
+                 ResourceNotAvailable);
 
     auto sched_bar = model_foo->set_scheduler(sched_foo);
     auto sched_baz = model_foo->get_scheduler();
@@ -119,7 +112,8 @@ TEST(Model, get_domain) {
     auto model_foo = make_shared<TestModel>();
     auto grid2_foo = make_shared<MultiGrid2D>(10, 10, true, true);
 
-    EXPECT_THROW(auto grid2_nul = model_foo->get_domain(), ResourceNotAvailable);
+    EXPECT_THROW(auto grid2_nul = model_foo->get_domain(),
+                 ResourceNotAvailable);
 
     auto grid2_bar = model_foo->set_domain(grid2_foo);
     auto grid2_baz = model_foo->get_domain();
@@ -129,11 +123,7 @@ TEST(Model, get_domain) {
     EXPECT_EQ(grid2_bar, grid2_baz);
 }
 
-int main(
-        int argc,
-        char** argv
-) {
+int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
-

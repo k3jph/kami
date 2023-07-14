@@ -23,17 +23,17 @@
  * SOFTWARE.
  */
 
-#include <memory>
-#include <utility>
-
 #include <kami/error.h>
 #include <kami/model.h>
 #include <kami/scheduler.h>
 
+#include <memory>
+#include <utility>
+
 namespace kami {
 
     std::shared_ptr<Domain> Model::get_domain() {
-        if (_domain == nullptr)
+        if(_domain == nullptr)
             throw error::ResourceNotAvailable("Domain not found in model");
         return _domain;
     }
@@ -44,23 +44,25 @@ namespace kami {
     }
 
     std::shared_ptr<Population> Model::get_population() {
-        if (_pop == nullptr)
+        if(_pop == nullptr)
             throw error::ResourceNotAvailable("Population not found in model");
         return _pop;
     }
 
-    std::shared_ptr<Population> Model::set_population(std::shared_ptr<Population> population) {
+    std::shared_ptr<Population> Model::set_population(
+        std::shared_ptr<Population> population) {
         _pop = std::move(population);
         return _pop;
     }
 
     std::shared_ptr<Scheduler> Model::get_scheduler() {
-        if (_sched == nullptr)
+        if(_sched == nullptr)
             throw error::ResourceNotAvailable("Scheduler not found in model");
         return _sched;
     }
 
-    std::shared_ptr<Scheduler> Model::set_scheduler(std::shared_ptr<Scheduler> scheduler) {
+    std::shared_ptr<Scheduler> Model::set_scheduler(
+        std::shared_ptr<Scheduler> scheduler) {
         _sched = std::move(scheduler);
         return _sched;
     }

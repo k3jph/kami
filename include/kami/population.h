@@ -29,11 +29,11 @@
 #define KAMI_POPULATION_H
 //! @endcond
 
-#include <map>
-#include <vector>
-
 #include <kami/agent.h>
 #include <kami/kami.h>
+
+#include <map>
+#include <vector>
 
 namespace kami {
 
@@ -41,7 +41,7 @@ namespace kami {
      * @brief An abstract for generic models
      */
     class LIBKAMI_EXPORT Population {
-    public:
+       public:
         /**
          * @brief Get a reference to an `Agent` by `AgentID`
          *
@@ -49,7 +49,8 @@ namespace kami {
          *
          * @return a reference to the desired `Agent` or nothing is not found
          */
-        [[nodiscard]] std::shared_ptr<Agent> get_agent_by_id(AgentID agent_id) const;
+        [[nodiscard]] std::shared_ptr<Agent> get_agent_by_id(
+            AgentID agent_id) const;
 
         /**
          * @brief Add an Agent to the Population.
@@ -74,9 +75,10 @@ namespace kami {
          *
          * @returns a `std::vector` of all the `AgentID`'s in the `Population`
          */
-        [[nodiscard]] std::unique_ptr<std::vector<AgentID>> get_agent_list() const;
+        [[nodiscard]] std::unique_ptr<std::vector<AgentID>> get_agent_list()
+            const;
 
-    protected:
+       protected:
         /**
          * @brief A mapping of `AgentID` to `Agent` pointers
          *

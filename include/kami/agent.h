@@ -29,25 +29,26 @@
 #define KAMI_AGENT_H
 //! @endcond
 
+#include <kami/model.h>
+
 #include <iostream>
 #include <memory>
 #include <string>
-
-#include <kami/model.h>
 
 namespace kami {
 
     /**
      * @brief A unique identifier for each `Agent`.
      *
-     * @details The unique identifier permits ordering to allow `AgentID`s to be used as keys
-     * for `std::map`. The unique identifier is unique for the session, however,
-     * `AgentID`s are not guaranteed to be unique from session-to-session.
+     * @details The unique identifier permits ordering to allow `AgentID`s to be
+     * used as keys for `std::map`. The unique identifier is unique for the
+     * session, however, `AgentID`s are not guaranteed to be unique from
+     * session-to-session.
      *
      * @see Agent
      */
     class LIBKAMI_EXPORT AgentID {
-    private:
+       private:
         inline static long long _id_next = 1;
 
         /**
@@ -60,7 +61,7 @@ namespace kami {
          */
         long long _id;
 
-    public:
+       public:
         /**
          * @brief Constructs a new unique identifier.
          */
@@ -80,10 +81,7 @@ namespace kami {
          * @param rhs is the right-hand side of the equality test.
          * @return true is they are equal and false if not.
          */
-        friend bool operator==(
-                const AgentID& lhs,
-                const AgentID& rhs
-        );
+        friend bool operator==(const AgentID& lhs, const AgentID& rhs);
 
         /**
          * @brief Test if two `AgentID` instances are not equal.
@@ -92,10 +90,7 @@ namespace kami {
          * @param rhs is the right-hand side of the equality test.
          * @return true is they are not equal and false if they are.
          */
-        friend bool operator!=(
-                const AgentID& lhs,
-                const AgentID& rhs
-        );
+        friend bool operator!=(const AgentID& lhs, const AgentID& rhs);
 
         /**
          * @brief Test if one AgentID is less than another.
@@ -109,41 +104,35 @@ namespace kami {
          * @return true if `lhs` is "less than" `rhs` as determined by the
          * underlying implementation of the `AgentID`.
          */
-        friend bool operator<(
-                const AgentID& lhs,
-                const AgentID& rhs
-        );
+        friend bool operator<(const AgentID& lhs, const AgentID& rhs);
 
         /**
          * @brief Output an AgentID to the specified output stream
          *
-         * @details The form of the output will be the same as that produced by the
-         * `to_string()` member function.
+         * @details The form of the output will be the same as that produced by
+         * the `to_string()` member function.
          *
          * @param lhs is the stream to output the `AgentID` to
          * @param rhs is the `AgentID` to output
          * @return the output stream for reuse
          */
-        friend std::ostream& operator<<(
-                std::ostream& lhs,
-                const AgentID& rhs
-        );
+        friend std::ostream& operator<<(std::ostream& lhs, const AgentID& rhs);
     };
 
     /**
      * @brief A superclass for all agents.
      *
-     * @details All agents should subclass the `Agent` class. At a minimum, subclasses must
-     * implement the `step()` function, to execute a single time step for each
-     * agent.
+     * @details All agents should subclass the `Agent` class. At a minimum,
+     * subclasses must implement the `step()` function, to execute a single time
+     * step for each agent.
      *
      * @see `ReporterAgent`, `StagedAgent`
      */
     class LIBKAMI_EXPORT Agent {
-    private:
+       private:
         const AgentID _agent_id;
 
-    public:
+       public:
         /**
          * @brief Get the `Agent`'s `AgentID`.
          *
@@ -154,8 +143,9 @@ namespace kami {
         /**
          * @brief Execute a time-step for the agent
          *
-         * @details This function should step the agent instance.  Any activities that the
-         * agent should perform as part of its time step should be in this function.
+         * @details This function should step the agent instance.  Any
+         * activities that the agent should perform as part of its time step
+         * should be in this function.
          *
          * @param model a reference copy of the model
          *
@@ -177,10 +167,7 @@ namespace kami {
          * Subclasses of Agent may chose to extend this operator to tighten
          * the restrictions on the comparison.
          */
-        friend bool operator==(
-                const Agent& lhs,
-                const Agent& rhs
-        );
+        friend bool operator==(const Agent& lhs, const Agent& rhs);
 
         /**
          * @brief Compare if two `Agent`s are not the same `Agent`.
@@ -196,33 +183,31 @@ namespace kami {
          * Subclasses of `Agent` may chose to extend this operator to tighten
          * the restrictions on the comparison.
          */
-        friend bool operator!=(
-                const Agent& lhs,
-                const Agent& rhs
-        );
+        friend bool operator!=(const Agent& lhs, const Agent& rhs);
     };
 
     /**
      * @brief A superclass for all staged agents.
      *
-     * @details Staged agents use a two-phase step to allow agents to take actions without
-     * updating the state of the model before all agents have been allowed to
-     * update.  All work necessary to advance the `StagedAgent` state should take
-     * place in the `step()` function.  However, the `StagedAgent` should not actually
-     * update the state, and instead save the results for later use.  Finally,
-     * during the `advance()` stage, the StagedAgent state should update.
+     * @details Staged agents use a two-phase step to allow agents to take
+     * actions without updating the state of the model before all agents have
+     * been allowed to update.  All work necessary to advance the `StagedAgent`
+     * state should take place in the `step()` function.  However, the
+     * `StagedAgent` should not actually update the state, and instead save the
+     * results for later use.  Finally, during the `advance()` stage, the
+     * StagedAgent state should update.
      *
-     * `StagedAgents` must implement both the `step()` and `advance()` functions.
+     * `StagedAgents` must implement both the `step()` and `advance()`
+     * functions.
      */
-    class LIBKAMI_EXPORT StagedAgent
-            : public Agent {
-    public:
+    class LIBKAMI_EXPORT StagedAgent : public Agent {
+       public:
         /**
          * @brief Post-step advance the agent
          *
-         * @details This method should be called after `step()`.  Any updates or cleanups to
-         * the agent that must happen for the `StagedAgent` to complete its step must
-         * happen here.
+         * @details This method should be called after `step()`.  Any updates or
+         * cleanups to the agent that must happen for the `StagedAgent` to
+         * complete its step must happen here.
          *
          * @param model a reference copy of the model
          *

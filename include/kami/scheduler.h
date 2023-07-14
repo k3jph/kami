@@ -29,36 +29,38 @@
 #define KAMI_SCHEDULER_H
 //! @endcond
 
-#include <memory>
-#include <vector>
-
 #include <kami/agent.h>
 #include <kami/kami.h>
 #include <kami/model.h>
 
+#include <memory>
+#include <vector>
+
 namespace kami {
-/**
- * Create a Kami scheduler.
- *
- * Schedulers are responsible for executing each time step in the model.  A
- * scheduler will have a collection of agents assigned to it and will execute
- * the step function for each agent based on the type of scheduling implemented.
- */
+    /**
+     * Create a Kami scheduler.
+     *
+     * Schedulers are responsible for executing each time step in the model.  A
+     * scheduler will have a collection of agents assigned to it and will
+     * execute the step function for each agent based on the type of scheduling
+     * implemented.
+     */
     class LIBKAMI_EXPORT Scheduler {
-    public:
+       public:
         /**
          * @brief Execute a single time step.
          *
          * @details This method will step through the list of Agents in the
-         * `Population` associated with `model` and then execute the `Agent::step()`
-         * method for every Agent assigned to this scheduler in the order
-         * assigned.
+         * `Population` associated with `model` and then execute the
+         * `Agent::step()` method for every Agent assigned to this scheduler in
+         * the order assigned.
          *
          * @param model a reference copy of the model
          *
          * @returns returns vector of agents successfully stepped
          */
-        virtual std::unique_ptr<std::vector<AgentID>> step(std::shared_ptr<Model> model) = 0;
+        virtual std::unique_ptr<std::vector<AgentID>> step(
+            std::shared_ptr<Model> model) = 0;
 
         /**
          * @brief Execute a single time step for a `ReporterModel`
@@ -72,7 +74,8 @@ namespace kami {
          *
          * @returns returns vector of agents successfully stepped
          */
-        virtual std::unique_ptr<std::vector<AgentID>> step(std::shared_ptr<ReporterModel> model) = 0;
+        virtual std::unique_ptr<std::vector<AgentID>> step(
+            std::shared_ptr<ReporterModel> model) = 0;
 
         /**
          * @brief Execute a single time step.
@@ -87,11 +90,9 @@ namespace kami {
          *
          * @returns returns vector of agents successfully stepped
          */
-        virtual std::unique_ptr<std::vector<AgentID>>
-        step(
-                std::shared_ptr<Model> model,
-                std::unique_ptr<std::vector<AgentID>> agent_list
-        ) = 0;
+        virtual std::unique_ptr<std::vector<AgentID>> step(
+            std::shared_ptr<Model> model,
+            std::unique_ptr<std::vector<AgentID>> agent_list) = 0;
 
         /**
          * @brief Execute a single time step for a `ReporterModel`
@@ -106,13 +107,11 @@ namespace kami {
          *
          * @returns returns vector of agents successfully stepped
          */
-        virtual std::unique_ptr<std::vector<AgentID>>
-        step(
-                std::shared_ptr<ReporterModel> model,
-                std::unique_ptr<std::vector<AgentID>> agent_list
-        ) = 0;
+        virtual std::unique_ptr<std::vector<AgentID>> step(
+            std::shared_ptr<ReporterModel> model,
+            std::unique_ptr<std::vector<AgentID>> agent_list) = 0;
 
-    protected:
+       protected:
         /**
          * Counter to increment on each step
          */

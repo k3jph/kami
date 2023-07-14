@@ -29,24 +29,25 @@
 #define KAMI_DOMAIN_H
 //! @endcond
 
-#include <string>
-
 #include <kami/kami.h>
+
+#include <string>
 
 namespace kami {
 
     /**
      * @brief Provides an environment for the agents to participate in.
      *
-     * @details Implementations of virtual environments are expected to subclass `Domain`.
+     * @details Implementations of virtual environments are expected to subclass
+     * `Domain`.
      */
     class LIBKAMI_EXPORT Domain {
-    protected:
+       protected:
         /**
          * @brief Constructor.
          *
-         * @details Making this constructor protected makes the class abstract without having
-         * to create any virtual functions.
+         * @details Making this constructor protected makes the class abstract
+         * without having to create any virtual functions.
          */
         Domain() = default;
     };
@@ -54,17 +55,18 @@ namespace kami {
     /**
      * @brief Provides a coordinate system for each `Domain`.
      *
-     * @details The coordinate system must be able to produce a human-readable version of the
-     * coordinates given.  For instance, an integer grid in two dimensions would
-     * provide standard Descartes coordinates like (0, 0) for the origin, or (2, 3)
-     * for the position that is two units "up" and three units to the "right" of the
-     * origin.  Implementation of a coordinate system is left up to the user, though
-     * there are several established systems provided.
+     * @details The coordinate system must be able to produce a human-readable
+     * version of the coordinates given.  For instance, an integer grid in two
+     * dimensions would provide standard Descartes coordinates like (0, 0) for
+     * the origin, or (2, 3) for the position that is two units "up" and three
+     * units to the "right" of the origin.  Implementation of a coordinate
+     * system is left up to the user, though there are several established
+     * systems provided.
      *
      * @see GridCoord
      */
     class LIBKAMI_EXPORT Coord {
-    public:
+       public:
         /**
          * @brief Convert the coordinate to a human-readable string.
          *
@@ -75,17 +77,14 @@ namespace kami {
         /**
          * @brief Output a `Coord` to the specified output stream
          *
-         * @details The form of the output will be the same as that produced by the
-         * `to_string()` member function.
+         * @details The form of the output will be the same as that produced by
+         * the `to_string()` member function.
          *
          * @param lhs is the stream to output the `Coord` to
          * @param rhs is the `Coord` to output
          * @return the output stream for reuse
          */
-        friend std::ostream& operator<<(
-                std::ostream& lhs,
-                const Coord& rhs
-        );
+        friend std::ostream& operator<<(std::ostream& lhs, const Coord& rhs);
     };
 
 }  // namespace kami

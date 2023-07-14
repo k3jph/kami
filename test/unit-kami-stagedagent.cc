@@ -23,50 +23,36 @@
  * SOFTWARE.
  */
 
-#include <memory>
-
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 #include <kami/agent.h>
 #include <kami/model.h>
 
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
+#include <memory>
 
 using namespace kami;
 using namespace std;
 
-class TestAgent
-        : public StagedAgent {
-public:
-    AgentID advance(shared_ptr<Model> model) override {
-        return get_agent_id();
-    }
+class TestAgent : public StagedAgent {
+   public:
+    AgentID advance(shared_ptr<Model> model) override { return get_agent_id(); }
 
-    AgentID step(shared_ptr<Model> model) override {
-        return get_agent_id();
-    }
+    AgentID step(shared_ptr<Model> model) override { return get_agent_id(); }
 };
 
-class TestModel
-        : public Model {
-};
+class TestModel : public Model {};
 
-class StagedAgentTest
-        : public ::testing::Test {
-protected:
+class StagedAgentTest : public ::testing::Test {
+   protected:
     TestAgent agent_foo;
     TestAgent agent_bar;
     shared_ptr<TestModel> model_world = nullptr;
 
-    void SetUp() override {
-        model_world = make_shared<TestModel>();
-    }
+    void SetUp() override { model_world = make_shared<TestModel>(); }
 };
 
 TEST(StagedAgent, DefaultConstructor) {
-    EXPECT_NO_THROW(
-            const TestAgent agent_baz;
-            const TestAgent agent_qux;
-    );
+    EXPECT_NO_THROW(const TestAgent agent_baz; const TestAgent agent_qux;);
 }
 
 TEST_F(StagedAgentTest, equivalance) {
@@ -99,11 +85,7 @@ TEST_F(StagedAgentTest, inequality) {
     EXPECT_FALSE(agent_bar != agent_bar);
 }
 
-int main(
-        int argc,
-        char** argv
-) {
+int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
-

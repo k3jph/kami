@@ -25,51 +25,42 @@
 
 #include "boltzmann1d.h"
 
+#include <kami/agent.h>
+#include <kami/kami.h>
+#include <kami/multigrid1d.h>
+#include <kami/population.h>
+#include <kami/random.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
+#include <spdlog/stopwatch.h>
+
+#include <CLI/CLI.hpp>
 #include <list>
 #include <map>
 #include <memory>
 #include <optional>
 #include <random>
 
-#include <CLI/CLI.hpp>
-
-#include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/spdlog.h>
-#include <spdlog/stopwatch.h>
-
-#include <kami/agent.h>
-#include <kami/kami.h>
-#include <kami/multigrid1d.h>
-#include <kami/population.h>
-#include <kami/random.h>
-
 std::shared_ptr<spdlog::logger> console = nullptr;
 std::shared_ptr<std::mt19937> rng = nullptr;
 
-template<>
-struct fmt::formatter<kami::AgentID>
-        : fmt::formatter<std::string> {
-    static auto format(
-            kami::AgentID agent_id,
-            format_context& ctx
-    ) {
+template <>
+struct fmt::formatter<kami::AgentID> : fmt::formatter<std::string> {
+    static auto format(kami::AgentID agent_id, format_context& ctx) {
         return format_to(ctx.out(), "{}", agent_id.to_string());
     }
 };
 
-template<>
-struct fmt::formatter<kami::GridCoord1D>
-        : fmt::formatter<std::string> {
-    static auto format(
-            const kami::GridCoord1D& coord,
-            format_context& ctx
-    ) {
+template <>
+struct fmt::formatter<kami::GridCoord1D> : fmt::formatter<std::string> {
+    static auto format(const kami::GridCoord1D& coord, format_context& ctx) {
         return format_to(ctx.out(), "{}", coord.to_string());
     }
 };
 
 MoneyAgent1D::~MoneyAgent1D() {
-    console->trace("Deconstructing Agent {} with final wealth {}", get_agent_id(), _agent_wealth);
+    console->trace("Deconstructing Agent {} with final wealth {}",
+                   get_agent_id(), _agent_wealth);
 }
 
 kami::AgentID MoneyAgent1D::step(std::shared_ptr<kami::Model> model) {
@@ -77,26 +68,24 @@ kami::AgentID MoneyAgent1D::step(std::shared_ptr<kami::Model> model) {
 
     console->trace("Agent {} is moving", this->get_agent_id());
     this->move_agent(model);
-    if (_agent_wealth > 0)
-        this->give_money(model);
+    if(_agent_wealth > 0) this->give_money(model);
 
     return this->get_agent_id();
 }
 
-std::optional<kami::GridCoord1D> MoneyAgent1D::move_agent(std::shared_ptr<kami::Model> model) {
+std::optional<kami::GridCoord1D> MoneyAgent1D::move_agent(
+    std::shared_ptr<kami::Model> model) {
     console->trace("Entering move_agent");
     auto agent_id = get_agent_id();
 
     auto domain = model->get_domain();
-    if (!domain)
-        throw (std::domain_error("model is missing domain"));
+    if(!domain) throw(std::domain_error("model is missing domain"));
     auto world = std::static_pointer_cast<kami::MultiGrid1D>(domain);
 
     auto move_list_opt = world->get_neighborhood(agent_id, false);
-    if (!move_list_opt)
-        return std::nullopt;
+    if(!move_list_opt) return std::nullopt;
     auto move_list = move_list_opt;
-    std::uniform_int_distribution<int> dist(0, (int) move_list->size() - 1);
+    std::uniform_int_distribution<int> dist(0, (int)move_list->size() - 1);
     auto new_location = *std::next(move_list->begin(), dist(*rng));
 
     console->trace("Moving Agent {} to location {}", agent_id, new_location);
@@ -106,35 +95,34 @@ std::optional<kami::GridCoord1D> MoneyAgent1D::move_agent(std::shared_ptr<kami::
     return new_location;
 }
 
-std::optional<kami::AgentID> MoneyAgent1D::give_money(std::shared_ptr<kami::Model> model) {
+std::optional<kami::AgentID> MoneyAgent1D::give_money(
+    std::shared_ptr<kami::Model> model) {
     console->trace("Entering give_money");
     auto agent_id = get_agent_id();
 
     auto domain = model->get_domain();
-    if (!domain)
-        throw (std::domain_error("model is missing domain"));
+    if(!domain) throw(std::domain_error("model is missing domain"));
     auto world = std::static_pointer_cast<kami::MultiGrid1D>(domain);
 
     auto agents = model->get_population();
-    if (!agents)
-        throw (std::domain_error("model is missing population"));
+    if(!agents) throw(std::domain_error("model is missing population"));
     auto population = std::static_pointer_cast<kami::Population>(agents);
 
     auto location = world->get_location_by_agent(agent_id);
     auto cell_mates_opt = world->get_location_contents(location);
 
-    if (!cell_mates_opt)
-        return std::nullopt;
+    if(!cell_mates_opt) return std::nullopt;
 
     auto cell_mates = cell_mates_opt;
-    if (cell_mates->size() < 2)
-        return std::nullopt;
+    if(cell_mates->size() < 2) return std::nullopt;
 
-    std::uniform_int_distribution<int> dist(0, (int) cell_mates->size() - 1);
+    std::uniform_int_distribution<int> dist(0, (int)cell_mates->size() - 1);
     auto other_agent_id = *std::next(cell_mates->begin(), dist(*rng));
-    auto other_agent = std::static_pointer_cast<MoneyAgent1D>(population->get_agent_by_id(other_agent_id));
+    auto other_agent = std::static_pointer_cast<MoneyAgent1D>(
+        population->get_agent_by_id(other_agent_id));
 
-    console->trace("Agent {} giving unit of wealth to agent {}", agent_id, other_agent_id);
+    console->trace("Agent {} giving unit of wealth to agent {}", agent_id,
+                   other_agent_id);
     other_agent->_agent_wealth += 1;
     _agent_wealth -= 1;
 
@@ -142,11 +130,9 @@ std::optional<kami::AgentID> MoneyAgent1D::give_money(std::shared_ptr<kami::Mode
     return other_agent_id;
 }
 
-BoltzmannWealthModel1D::BoltzmannWealthModel1D(
-        unsigned int number_agents,
-        unsigned int length_x,
-        unsigned int new_seed
-) {
+BoltzmannWealthModel1D::BoltzmannWealthModel1D(unsigned int number_agents,
+                                               unsigned int length_x,
+                                               unsigned int new_seed) {
     rng = std::make_shared<std::mt19937>();
     rng->seed(new_seed);
 
@@ -162,14 +148,16 @@ BoltzmannWealthModel1D::BoltzmannWealthModel1D(
 
     _step_count = 0;
 
-    std::uniform_int_distribution<int> dist(0, (int) length_x - 1);
+    std::uniform_int_distribution<int> dist(0, (int)length_x - 1);
 
-    for (unsigned int i = 0; i < number_agents; i++) {
+    for(unsigned int i = 0; i < number_agents; i++) {
         auto new_agent = std::make_shared<MoneyAgent1D>();
 
-        console->trace("Initializing agent with AgentID {}", new_agent->get_agent_id());
+        console->trace("Initializing agent with AgentID {}",
+                       new_agent->get_agent_id());
         population->add_agent(new_agent);
-        domain->add_agent(new_agent->get_agent_id(), kami::GridCoord1D(dist(*rng)));
+        domain->add_agent(new_agent->get_agent_id(),
+                          kami::GridCoord1D(dist(*rng)));
     }
 }
 
@@ -182,42 +170,48 @@ std::shared_ptr<kami::Model> BoltzmannWealthModel1D::step() {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EmptyDeclOrStmt"
 
-int main(
-        int argc,
-        char** argv
-) {
+int main(int argc, char** argv) {
     std::string ident = "boltzmann1d";
     std::string log_level_option = "info";
     CLI::App app{ident};
-    unsigned int x_size = 16, agent_count = x_size, max_steps = 100, initial_seed = 42;
+    unsigned int x_size = 16, agent_count = x_size, max_steps = 100,
+                 initial_seed = 42;
 
     // This exercise is really stupid.
     auto levels_list = std::make_unique<std::list<std::string>>();
-    for (auto& level_name : SPDLOG_LEVEL_NAMES)
-        levels_list->push_back(std::string(level_name.data(), level_name.size()));
+    for(auto& level_name : SPDLOG_LEVEL_NAMES)
+        levels_list->push_back(
+            std::string(level_name.data(), level_name.size()));
 
-    app.add_option("-c", agent_count, "Set the number of agents")->check(CLI::PositiveNumber);
-    app.add_option("-l", log_level_option, "Set the logging level")->check(
-            CLI::IsMember(levels_list.get(), CLI::ignore_case));
-    app.add_option("-n", max_steps, "Set the number of steps to run the model")->check(CLI::PositiveNumber);
-    app.add_option("-s", initial_seed, "Set the initial seed")->check(CLI::Number);
-    app.add_option("-x", x_size, "Set the number of columns")->check(CLI::PositiveNumber);
+    app.add_option("-c", agent_count, "Set the number of agents")
+        ->check(CLI::PositiveNumber);
+    app.add_option("-l", log_level_option, "Set the logging level")
+        ->check(CLI::IsMember(levels_list.get(), CLI::ignore_case));
+    app.add_option("-n", max_steps, "Set the number of steps to run the model")
+        ->check(CLI::PositiveNumber);
+    app.add_option("-s", initial_seed, "Set the initial seed")
+        ->check(CLI::Number);
+    app.add_option("-x", x_size, "Set the number of columns")
+        ->check(CLI::PositiveNumber);
     CLI11_PARSE(app, argc, argv);
 
     console = spdlog::stdout_color_st(ident);
     console->set_level(spdlog::level::from_str(log_level_option));
-    console->info("Compiled with Kami/{}, log level {}", kami::version.to_string(), log_level_option);
+    console->info("Compiled with Kami/{}, log level {}",
+                  kami::version.to_string(), log_level_option);
     console->info(
-            "Starting Boltzmann Wealth Model with {} agents on a {}-unit grid for {} steps", agent_count, x_size,
-            max_steps);
+        "Starting Boltzmann Wealth Model with {} agents on a {}-unit grid for "
+        "{} steps",
+        agent_count, x_size, max_steps);
 
     spdlog::stopwatch sw;
 
-    auto model = std::make_shared<BoltzmannWealthModel1D>(agent_count, x_size, initial_seed);
-    for (int i = 0; i < max_steps; i++)
-        model->step();
+    auto model = std::make_shared<BoltzmannWealthModel1D>(agent_count, x_size,
+                                                          initial_seed);
+    for(int i = 0; i < max_steps; i++) model->step();
 
-    console->info("Boltzmann Wealth Model simulation complete, requiring {} seconds", sw);
+    console->info(
+        "Boltzmann Wealth Model simulation complete, requiring {} seconds", sw);
 }
 
 #pragma clang diagnostic pop

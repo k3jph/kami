@@ -29,31 +29,26 @@
 #define BOLTZMANN1D_H
 //! @endcond
 
-#include <iostream>
-#include <map>
-#include <memory>
-#include <optional>
-
 #include <kami/agent.h>
 #include <kami/kami.h>
 #include <kami/multigrid1d.h>
 #include <kami/population.h>
 #include <kami/random.h>
 
+#include <iostream>
+#include <map>
+#include <memory>
+#include <optional>
 
 /**
  * A sample agent for a one-dimensional Boltzmann wealth model
  */
-class MoneyAgent1D
-        : public kami::Agent {
-
-public:
+class MoneyAgent1D : public kami::Agent {
+   public:
     /**
      * Create the agent
      */
-    MoneyAgent1D()
-            :_step_counter(0), _agent_wealth(1) {
-    }
+    MoneyAgent1D() : _step_counter(0), _agent_wealth(1) {}
 
     /**
      * Deconstruct the agent
@@ -68,26 +63,24 @@ public:
     /**
      * Move the agent to a random location on the world
      */
-    std::optional<kami::GridCoord1D> move_agent(std::shared_ptr<kami::Model> model);
+    std::optional<kami::GridCoord1D> move_agent(
+        std::shared_ptr<kami::Model> model);
 
     /**
      * Give money to a random agent
      */
     std::optional<kami::AgentID> give_money(std::shared_ptr<kami::Model> model);
 
-private:
+   private:
     int _step_counter;
     int _agent_wealth;
-
 };
 
 /**
  * The one-dimensional Boltzmann wealth model
  */
-class BoltzmannWealthModel1D
-        : public kami::Model {
-
-public:
+class BoltzmannWealthModel1D : public kami::Model {
+   public:
     /**
      * Create an instance of the one-dimensional Boltzmann wealth model.
      *
@@ -95,18 +88,16 @@ public:
      * @param[in] length_x the length of the one-dimensional world the agents
      * occupy.
      */
-    explicit BoltzmannWealthModel1D(
-            unsigned int number_agents = 10,
-            unsigned int length_x = 10,
-            unsigned int new_seed = 42
-    );
+    explicit BoltzmannWealthModel1D(unsigned int number_agents = 10,
+                                    unsigned int length_x = 10,
+                                    unsigned int new_seed = 42);
 
     /**
      * Execute a single time-step for the model.
      */
     std::shared_ptr<kami::Model> step() final;
 
-private:
+   private:
     unsigned int _step_count;
 };
 

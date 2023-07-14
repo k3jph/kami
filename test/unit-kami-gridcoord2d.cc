@@ -23,16 +23,14 @@
  * SOFTWARE.
  */
 
-#include <kami/grid2d.h>
-
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <kami/grid2d.h>
 
 using namespace kami;
 
-class GridCoord2DTest
-        : public ::testing::Test {
-protected:
+class GridCoord2DTest : public ::testing::Test {
+   protected:
     GridCoord2D gridcoord2d_foo = GridCoord2D(0, 0);
     GridCoord2D gridcoord2d_bar = GridCoord2D(1, 1);
     GridCoord2D gridcoord2d_baz = GridCoord2D(-1, -1);
@@ -48,7 +46,6 @@ TEST_F(GridCoord2DTest, DefaultConstructor) {
     EXPECT_NE(gridcoord2d_bar, gridcoord2d_baz);
     EXPECT_NE(gridcoord2d_foo, gridcoord2d_qux);
     EXPECT_NE(gridcoord2d_foo, gridcoord2d_qu2);
-
 }
 
 TEST_F(GridCoord2DTest, to_string) {
@@ -146,10 +143,7 @@ TEST_F(GridCoord2DTest, y) {
     EXPECT_FALSE(gridcoord2d_bar.y() == gridcoord2d_qu2.y());
 }
 
-int main(
-        int argc,
-        char** argv
-) {
+int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

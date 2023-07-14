@@ -29,10 +29,10 @@
 #define KAMI_KAMI_H
 //! @endcond
 
-#include <semver.hpp>
-
 #include <kami/KAMI_EXPORT.h>
 #include <kami/config.h>
+
+#include <semver.hpp>
 
 namespace kami {
 
@@ -58,16 +58,14 @@ namespace kami {
      *
      * @return a `semver::version` object containing version information
      */
-    inline semver::version get_version() {
-        return version;
-    }
+    inline semver::version get_version() { return version; }
 
     /**
      * @brief A catalog of handy constants, mostly useful for seeding
      * a random number generator
      */
     class Constants {
-    public:
+       public:
         /**
          * @brief Life, the Universe, and Everything!
          */

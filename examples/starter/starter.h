@@ -29,23 +29,21 @@
 #define STARTER_H
 //! @endcond
 
-#include <iostream>
-#include <map>
-
 #include <kami/agent.h>
 #include <kami/kami.h>
 #include <kami/random.h>
 
+#include <iostream>
+#include <map>
+
 /**
  * A starter agent for a starter model
  */
-class StarterAgent
-        : public kami::Agent {
-private:
+class StarterAgent : public kami::Agent {
+   private:
     int _step_counter = 0;
 
-public:
-
+   public:
     /**
      * Constructor
      */
@@ -60,18 +58,16 @@ public:
      * Execute a single time-step for the agent
      */
     kami::AgentID step(std::shared_ptr<kami::Model> model) override;
-
 };
 
 /**
  * The one-dimensional Boltzmann wealth model
  */
-class StarterModel
-        : public kami::Model {
-private:
+class StarterModel : public kami::Model {
+   private:
     unsigned int _step_count;
 
-public:
+   public:
     /**
      * Create an instance of the one-dimensional Boltzmann wealth model.
      *
@@ -79,10 +75,8 @@ public:
      * @param[in] length_x the length of the one-dimensional world the agents
      * occupy.
      */
-    explicit StarterModel(
-            unsigned int number_agents = 10,
-            unsigned int new_seed = 42
-    );
+    explicit StarterModel(unsigned int number_agents = 10,
+                          unsigned int new_seed = 42);
 
     /**
      * Execute a single time-step for the model.

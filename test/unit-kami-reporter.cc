@@ -23,25 +23,23 @@
  * SOFTWARE.
  */
 
-#include <algorithm>
-#include <memory>
-#include <utility>
-#include <vector>
-
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 #include <kami/agent.h>
 #include <kami/population.h>
 #include <kami/reporter.h>
 #include <kami/staged.h>
 
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
+#include <algorithm>
+#include <memory>
+#include <utility>
+#include <vector>
 
 using namespace kami;
 using namespace std;
 
-class TestAgent
-        : public ReporterAgent {
-public:
+class TestAgent : public ReporterAgent {
+   public:
     AgentID step(shared_ptr<ReporterModel> model) override {
         return get_agent_id();
     }
@@ -56,9 +54,8 @@ public:
     }
 };
 
-class TestModel
-        : public ReporterModel {
-public:
+class TestModel : public ReporterModel {
+   public:
     shared_ptr<vector<AgentID>> retval;
 
     std::unique_ptr<nlohmann::json> collect() override {
@@ -71,9 +68,8 @@ public:
     }
 };
 
-class ReporterModelTest
-        : public ::testing::Test {
-protected:
+class ReporterModelTest : public ::testing::Test {
+   protected:
     shared_ptr<TestModel> mod = nullptr;
 
     void SetUp() override {
@@ -85,7 +81,7 @@ protected:
         static_cast<void>(mod->set_population(popul_foo));
         static_cast<void>(mod->set_scheduler(sched_foo));
 
-        for (auto i = 0; i < 3; i++) {
+        for(auto i = 0; i < 3; i++) {
             auto agent_foo = make_shared<TestAgent>();
             static_cast<void>(popul_foo->add_agent(agent_foo));
         }
@@ -96,9 +92,7 @@ TEST(ReporterModel, DefaultConstructor) {
     // There is really no way this can go wrong, but
     // we add this check anyway in case of future
     // changes.
-    EXPECT_NO_THROW(
-            const TestModel reporter_foo;
-    );
+    EXPECT_NO_THROW(const TestModel reporter_foo;);
 }
 
 TEST_F(ReporterModelTest, collect) {
@@ -111,7 +105,7 @@ TEST_F(ReporterModelTest, collect) {
 }
 
 TEST_F(ReporterModelTest, report) {
-    for (auto i = 0; i < 2; i++) {
+    for(auto i = 0; i < 2; i++) {
         auto aval = mod->get_population()->get_agent_list();
 
         mod->step();
@@ -119,15 +113,21 @@ TEST_F(ReporterModelTest, report) {
     }
 
     auto rval = mod->report();
-    EXPECT_EQ(rval->dump(),
-            "[{\"agent_data\":[{\"agent_id\":\"13\",\"data\":{\"fname\":\"Jesse\",\"lname\":\"Pinkman\"}},{\"agent_id\":\"14\",\"data\":{\"fname\":\"Jesse\",\"lname\":\"Pinkman\"}},{\"agent_id\":\"15\",\"data\":{\"fname\":\"Jesse\",\"lname\":\"Pinkman\"}}],\"model_data\":{\"fname\":\"Walter\",\"lname\":\"White\"},\"step_id\":1},{\"agent_data\":[{\"agent_id\":\"13\",\"data\":{\"fname\":\"Jesse\",\"lname\":\"Pinkman\"}},{\"agent_id\":\"14\",\"data\":{\"fname\":\"Jesse\",\"lname\":\"Pinkman\"}},{\"agent_id\":\"15\",\"data\":{\"fname\":\"Jesse\",\"lname\":\"Pinkman\"}}],\"model_data\":{\"fname\":\"Walter\",\"lname\":\"White\"},\"step_id\":2}]");
+    EXPECT_EQ(
+        rval->dump(),
+        "[{\"agent_data\":[{\"agent_id\":\"13\",\"data\":{\"fname\":\"Jesse\","
+        "\"lname\":\"Pinkman\"}},{\"agent_id\":\"14\",\"data\":{\"fname\":"
+        "\"Jesse\",\"lname\":\"Pinkman\"}},{\"agent_id\":\"15\",\"data\":{"
+        "\"fname\":\"Jesse\",\"lname\":\"Pinkman\"}}],\"model_data\":{"
+        "\"fname\":\"Walter\",\"lname\":\"White\"},\"step_id\":1},{\"agent_"
+        "data\":[{\"agent_id\":\"13\",\"data\":{\"fname\":\"Jesse\",\"lname\":"
+        "\"Pinkman\"}},{\"agent_id\":\"14\",\"data\":{\"fname\":\"Jesse\","
+        "\"lname\":\"Pinkman\"}},{\"agent_id\":\"15\",\"data\":{\"fname\":"
+        "\"Jesse\",\"lname\":\"Pinkman\"}}],\"model_data\":{\"fname\":"
+        "\"Walter\",\"lname\":\"White\"},\"step_id\":2}]");
 }
 
-int main(
-        int argc,
-        char** argv
-) {
+int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
-

@@ -29,30 +29,26 @@
 #define BOLTZMANN2D_H
 //! @endcond
 
-#include <iostream>
-#include <map>
-#include <memory>
-#include <optional>
-
 #include <kami/agent.h>
 #include <kami/kami.h>
 #include <kami/multigrid2d.h>
 #include <kami/population.h>
 #include <kami/random.h>
 
+#include <iostream>
+#include <map>
+#include <memory>
+#include <optional>
+
 /**
  * A sample agent for a two-dimensional Boltzmann wealth model
  */
-class MoneyAgent2D
-        : public kami::Agent {
-
-public:
+class MoneyAgent2D : public kami::Agent {
+   public:
     /**
      * Create the agent
      */
-    MoneyAgent2D()
-            :_step_counter(0), _agent_wealth(1) {
-    }
+    MoneyAgent2D() : _step_counter(0), _agent_wealth(1) {}
 
     /**
      * Deconstruct the agent
@@ -67,14 +63,16 @@ public:
     /**
      * Move the agent to a random location on the world
      */
-    std::optional<kami::GridCoord2D> move_agent(const std::shared_ptr<kami::Model>& model);
+    std::optional<kami::GridCoord2D> move_agent(
+        const std::shared_ptr<kami::Model>& model);
 
     /**
      * Give money to a random agent
      */
-    std::optional<kami::AgentID> give_money(const std::shared_ptr<kami::Model>& model);
+    std::optional<kami::AgentID> give_money(
+        const std::shared_ptr<kami::Model>& model);
 
-private:
+   private:
     int _step_counter;
     int _agent_wealth;
 };
@@ -82,10 +80,8 @@ private:
 /**
  * The two-dimensional Boltzmann wealth model
  */
-class BoltzmannWealthModel2D
-        : public kami::Model {
-
-public:
+class BoltzmannWealthModel2D : public kami::Model {
+   public:
     /**
      * Create an instance of the two-dimensional Boltzmann wealth model.
      *
@@ -97,19 +93,17 @@ public:
      * @param[in] new_seed the initial seed used for the random number
      * generator.
      */
-    explicit BoltzmannWealthModel2D(
-            unsigned int number_agents = 10,
-            unsigned int length_x = 10,
-            unsigned int length_y = 10,
-            unsigned int new_seed = 42
-    );
+    explicit BoltzmannWealthModel2D(unsigned int number_agents = 10,
+                                    unsigned int length_x = 10,
+                                    unsigned int length_y = 10,
+                                    unsigned int new_seed = 42);
 
     /**
      * Execute a single time-step for the model.
      */
     std::shared_ptr<kami::Model> step() final;
 
-private:
+   private:
     unsigned int _step_count;
 };
 

@@ -29,6 +29,11 @@
 #define KAMI_GRID1D_H
 //! @endcond
 
+#include <kami/domain.h>
+#include <kami/error.h>
+#include <kami/grid.h>
+#include <kami/kami.h>
+
 #include <iostream>
 #include <map>
 #include <memory>
@@ -37,19 +42,13 @@
 #include <unordered_set>
 #include <vector>
 
-#include <kami/domain.h>
-#include <kami/error.h>
-#include <kami/grid.h>
-#include <kami/kami.h>
-
 namespace kami {
 
     /**
      * @brief One-dimensional coordinates
      */
-    class LIBKAMI_EXPORT GridCoord1D
-            : public GridCoord {
-    public:
+    class LIBKAMI_EXPORT GridCoord1D : public GridCoord {
+       public:
         /**
          * @brief Constructor for one-dimensional coordinates
          */
@@ -90,66 +89,48 @@ namespace kami {
         /**
          * @brief Test if two coordinates are equal
          */
-        friend bool operator==(
-                const GridCoord1D& lhs,
-                const GridCoord1D& rhs
-        );
+        friend bool operator==(const GridCoord1D& lhs, const GridCoord1D& rhs);
 
         /**
          * @brief Test if two coordinates are not equal
          */
-        friend bool operator!=(
-                const GridCoord1D& lhs,
-                const GridCoord1D& rhs
-        );
+        friend bool operator!=(const GridCoord1D& lhs, const GridCoord1D& rhs);
 
         /**
          * @brief Output a given coordinate to the specified stream
          */
-        friend std::ostream& operator<<(
-                std::ostream& lhs,
-                const GridCoord1D& rhs
-        );
+        friend std::ostream& operator<<(std::ostream& lhs,
+                                        const GridCoord1D& rhs);
 
         /**
          * @brief Add two coordinates together
          */
-        inline friend GridCoord1D operator+(
-                const GridCoord1D& lhs,
-                const GridCoord1D& rhs
-        );
+        inline friend GridCoord1D operator+(const GridCoord1D& lhs,
+                                            const GridCoord1D& rhs);
 
         /**
          * @brief Subtract one coordinate from another
          */
-        inline friend GridCoord1D operator-(
-                const GridCoord1D& lhs,
-                const GridCoord1D& rhs
-        );
+        inline friend GridCoord1D operator-(const GridCoord1D& lhs,
+                                            const GridCoord1D& rhs);
 
         /**
          * @brief Multiply a coordinate by a scalar
          *
-         * @details If any component of the resulting value is not a whole number, it is
-         * truncated following the same rules as `int`.
+         * @details If any component of the resulting value is not a whole
+         * number, it is truncated following the same rules as `int`.
          */
-        inline friend GridCoord1D operator*(
-                const GridCoord1D& lhs,
-                double rhs
-        );
+        inline friend GridCoord1D operator*(const GridCoord1D& lhs, double rhs);
 
         /**
          * @brief Multiply a coordinate by a scalar
          *
-         * @details If any component of the resulting value is not a whole number, it is
-         * truncated following the same rules as `int`.
+         * @details If any component of the resulting value is not a whole
+         * number, it is truncated following the same rules as `int`.
          */
-        inline friend GridCoord1D operator*(
-                double lhs,
-                const GridCoord1D& rhs
-        );
+        inline friend GridCoord1D operator*(double lhs, const GridCoord1D& rhs);
 
-    private:
+       private:
         int _x_coord;
     };
 
@@ -161,19 +142,15 @@ namespace kami {
      * @see `MultiGrid1D`
      * @see `SoloGrid1D`
      */
-    class LIBKAMI_EXPORT Grid1D
-            : public GridDomain {
-    public:
+    class LIBKAMI_EXPORT Grid1D : public GridDomain {
+       public:
         /**
          * @brief Constructor
          *
          * @param[in] maximum_x the length of the grid.
          * @param[in] wrap_x should the grid wrap around on itself.
          */
-        explicit Grid1D(
-                unsigned int maximum_x,
-                bool wrap_x = false
-        );
+        explicit Grid1D(unsigned int maximum_x, bool wrap_x = false);
 
         /**
          * @brief Place agent on the grid at the specified location.
@@ -184,10 +161,8 @@ namespace kami {
          * @returns false if the agent is not placed at the specified
          * location, otherwise, true.
          */
-        virtual AgentID add_agent(
-                AgentID agent_id,
-                const GridCoord1D& coord
-        ) = 0;
+        virtual AgentID add_agent(AgentID agent_id,
+                                  const GridCoord1D& coord) = 0;
 
         /**
          * @brief Remove agent from the grid.
@@ -206,10 +181,7 @@ namespace kami {
          *
          * @returns the `AgentID` of the `Agent` deleted
          */
-        AgentID delete_agent(
-                AgentID agent_id,
-                const GridCoord1D& coord
-        );
+        AgentID delete_agent(AgentID agent_id, const GridCoord1D& coord);
 
         /**
          * @brief Move an agent to the specified location.
@@ -217,10 +189,7 @@ namespace kami {
          * @param[in] agent_id the `AgentID` of the agent to move.
          * @param[in] coord the coordinates of the agent.
          */
-        AgentID move_agent(
-                AgentID agent_id,
-                const GridCoord1D& coord
-        );
+        AgentID move_agent(AgentID agent_id, const GridCoord1D& coord);
 
         /**
          * @brief Inquire if the specified location is empty.
@@ -248,7 +217,8 @@ namespace kami {
          *
          * @return the location of the specified `Agent`
          */
-        [[nodiscard]] GridCoord1D get_location_by_agent(const AgentID& agent_id) const;
+        [[nodiscard]] GridCoord1D get_location_by_agent(
+            const AgentID& agent_id) const;
 
         /**
          * @brief Get the contents of the specified location.
@@ -256,12 +226,12 @@ namespace kami {
          * @param[in] coord the coordinates of the query.
          *
          * @return a pointer to a `set` of `AgentID`s.  The pointer is to the
-         * internal copy of the agent list at the location, therefore, any changes
-         * to that object will update the state of the gird.  Further, the pointer
-         * should not be deleted when no longer used.
+         * internal copy of the agent list at the location, therefore, any
+         * changes to that object will update the state of the gird.  Further,
+         * the pointer should not be deleted when no longer used.
          */
-        [[nodiscard]] std::shared_ptr<std::set<AgentID>>
-        get_location_contents(const GridCoord1D& coord) const;
+        [[nodiscard]] std::shared_ptr<std::set<AgentID>> get_location_contents(
+            const GridCoord1D& coord) const;
 
         /**
          * @brief Inquire to whether the grid wraps in the `x` dimension.
@@ -274,33 +244,27 @@ namespace kami {
          * @brief Return the neighborhood of the specified Agent
          *
          * @param[in] agent_id the `AgentID` of the agent in question
-         * @param[in] include_center should the center-point, occupied by the agent,
-         * be in the list.
+         * @param[in] include_center should the center-point, occupied by the
+         * agent, be in the list.
          *
-         * @return an `unordered_set` of `GridCoord1D` that includes all of the coordinates
-         * for all adjacent points.
+         * @return an `unordered_set` of `GridCoord1D` that includes all of the
+         * coordinates for all adjacent points.
          */
         [[nodiscard]] std::shared_ptr<std::unordered_set<GridCoord1D>>
-        get_neighborhood(
-                AgentID agent_id,
-                bool include_center
-        ) const;
+        get_neighborhood(AgentID agent_id, bool include_center) const;
 
         /**
          * @brief Return the neighborhood of the specified location
          *
          * @param[in] coord the coordinates of the specified location.
-         * @param[in] include_center should the center-point, occupied by the agent,
-         * be in the list.
+         * @param[in] include_center should the center-point, occupied by the
+         * agent, be in the list.
          *
-         * @return an `unordered_set` of `GridCoord1D` that includes all of the coordinates
-         * for all adjacent points.
+         * @return an `unordered_set` of `GridCoord1D` that includes all of the
+         * coordinates for all adjacent points.
          */
         [[nodiscard]] std::shared_ptr<std::unordered_set<GridCoord1D>>
-        get_neighborhood(
-                const GridCoord1D& coord,
-                bool include_center
-        ) const;
+        get_neighborhood(const GridCoord1D& coord, bool include_center) const;
 
         /**
          * @brief Get the size of the grid in the `x` dimension.
@@ -309,7 +273,7 @@ namespace kami {
          */
         [[nodiscard]] unsigned int get_maximum_x() const;
 
-    protected:
+       protected:
         /**
          * @brief Direction coordinates
          *
@@ -319,13 +283,15 @@ namespace kami {
          * the right on a horizontally-oriented column.  Then the additional
          * directions are enumerated clockwise.
          */
-        const std::vector<GridCoord1D> directions = {GridCoord1D(1), GridCoord1D(-1)};
+        const std::vector<GridCoord1D> directions = {GridCoord1D(1),
+                                                     GridCoord1D(-1)};
 
         /**
-         * @brief An `unordered_set` containing the `AgentID`s of all agents assigned to this
-         * grid.
+         * @brief An `unordered_set` containing the `AgentID`s of all agents
+         * assigned to this grid.
          */
-        std::unique_ptr<std::unordered_multimap<GridCoord1D, AgentID>> _agent_grid;
+        std::unique_ptr<std::unordered_multimap<GridCoord1D, AgentID>>
+            _agent_grid;
 
         /**
          * @brief A map containing the grid location of each agent.
@@ -341,7 +307,7 @@ namespace kami {
          */
         [[nodiscard]] GridCoord1D coord_wrap(const GridCoord1D& coord) const;
 
-    private:
+       private:
         unsigned int _maximum_x;
         bool _wrap_x;
     };
@@ -351,7 +317,7 @@ namespace kami {
 //! @cond SuppressHashMethod
 #define KAMI_GRID1D_H
 namespace std {
-    template<>
+    template <>
     struct hash<kami::GridCoord1D> {
         size_t operator()(const kami::GridCoord1D& key) const {
             return (hash<int>()(key.x()));

@@ -23,31 +23,28 @@
  * SOFTWARE.
  */
 
-#include "bankreserves.h"
-
-#include <nlohmann/json.hpp>
-
+#include <kami/agent.h>
+#include <kami/kami.h>
+#include <kami/multigrid2d.h>
+#include <kami/random.h>
+#include <kami/reporter.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 #include <spdlog/stopwatch.h>
 
-#include <kami/agent.h>
-#include <kami/multigrid2d.h>
-#include <kami/kami.h>
-#include <kami/random.h>
-#include <kami/reporter.h>
+#include <nlohmann/json.hpp>
 
-BankReservesModel::BankReservesModel(
-        unsigned int agent_count,
-        unsigned int x_size,
-        unsigned int y_size,
-        unsigned int initial_seed,
-        unsigned int max_initial_wealth
-) {
+#include "bankreserves.h"
+
+BankReservesModel::BankReservesModel(unsigned int agent_count,
+                                     unsigned int x_size, unsigned int y_size,
+                                     unsigned int initial_seed,
+                                     unsigned int max_initial_wealth) {
     rng = std::make_shared<std::mt19937>();
     rng->seed(initial_seed);
 
-    auto domain = std::make_shared<kami::MultiGrid2D>(x_size, y_size, true, true);
+    auto domain =
+        std::make_shared<kami::MultiGrid2D>(x_size, y_size, true, true);
     auto sched = std::make_shared<kami::RandomScheduler>(rng);
     auto pop = std::make_shared<kami::Population>();
 
@@ -61,16 +58,18 @@ BankReservesModel::BankReservesModel(
 
     _step_count = 0;
 
-    std::uniform_int_distribution<int> dist_x(0, (int) x_size - 1);
-    std::uniform_int_distribution<int> dist_y(0, (int) y_size - 1);
+    std::uniform_int_distribution<int> dist_x(0, (int)x_size - 1);
+    std::uniform_int_distribution<int> dist_y(0, (int)y_size - 1);
     std::uniform_int_distribution<unsigned int> dist(1, max_initial_wealth);
 
-    for (auto i = 0; i < agent_count; i++) {
+    for(auto i = 0; i < agent_count; i++) {
         auto wallet = dist(*rng);
         auto new_agent = std::make_shared<PersonAgent>(10, bank_agent);
 
         pop->add_agent(new_agent);
-        domain->add_agent(new_agent->get_agent_id(), kami::GridCoord2D(dist_x(*rng), dist_x(*rng)));
-        console->trace("Initialized agent with AgentID {} with wallet {}", new_agent->get_agent_id(), wallet);
+        domain->add_agent(new_agent->get_agent_id(),
+                          kami::GridCoord2D(dist_x(*rng), dist_x(*rng)));
+        console->trace("Initialized agent with AgentID {} with wallet {}",
+                       new_agent->get_agent_id(), wallet);
     }
 }

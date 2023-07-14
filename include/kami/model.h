@@ -29,12 +29,12 @@
 #define KAMI_MODEL_H
 //! @endcond
 
-#include <memory>
-
 #include <kami/domain.h>
 #include <kami/kami.h>
 #include <kami/population.h>
 #include <kami/scheduler.h>
+
+#include <memory>
 
 namespace kami {
 
@@ -43,10 +43,8 @@ namespace kami {
      *
      * @see `ReporterModel`
      */
-    class LIBKAMI_EXPORT Model
-            : public std::enable_shared_from_this<Model> {
-
-    public:
+    class LIBKAMI_EXPORT Model : public std::enable_shared_from_this<Model> {
+       public:
         /**
          * @brief Get the `Domain` associated with this model
          *
@@ -79,7 +77,8 @@ namespace kami {
          *
          * @returns a shared pointer to the `Population`
          */
-        std::shared_ptr<Population> set_population(std::shared_ptr<Population> population);
+        std::shared_ptr<Population> set_population(
+            std::shared_ptr<Population> population);
 
         /**
          * @brief Get the `Scheduler` associated with this model
@@ -96,34 +95,35 @@ namespace kami {
          *
          * @returns a shared pointer to the `Scheduler`
          */
-        std::shared_ptr<Scheduler> set_scheduler(std::shared_ptr<Scheduler> scheduler);
+        std::shared_ptr<Scheduler> set_scheduler(
+            std::shared_ptr<Scheduler> scheduler);
 
         /**
          * @brief Execute a single time step of the model
          *
-         * @details This method will collect all the `Agent`s in the `Population` associated
-         * with model and pass them to the associated `Scheduler` for stepping.
+         * @details This method will collect all the `Agent`s in the
+         * `Population` associated with model and pass them to the associated
+         * `Scheduler` for stepping.
          *
          * @returns a shared pointer to the model instance
          */
         virtual std::shared_ptr<Model> step();
 
-    protected:
+       protected:
         /**
-        * @brief Reference copy of the `Domain`
-        */
+         * @brief Reference copy of the `Domain`
+         */
         std::shared_ptr<Domain> _domain = nullptr;
 
         /**
-        * @brief Reference copy of the `Population`
-        */
+         * @brief Reference copy of the `Population`
+         */
         std::shared_ptr<Population> _pop = nullptr;
 
         /**
-        * @brief Reference copy of the `Scheduler`
-        */
+         * @brief Reference copy of the `Scheduler`
+         */
         std::shared_ptr<Scheduler> _sched = nullptr;
-
     };
 
 }  // namespace kami

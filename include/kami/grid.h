@@ -29,10 +29,10 @@
 #define KAMI_GRID_H
 //! @endcond
 
-#include <string>
-
 #include <kami/domain.h>
 #include <kami/kami.h>
+
+#include <string>
 
 namespace kami {
 
@@ -41,15 +41,15 @@ namespace kami {
      *
      * @details Orthogonal grid domains are those that provide cells equidistant
      * along a standard Cartesian grid.  `GridNeighborhoodType` allows for the
-     * distinction between those neighborhoods that include those cells touching on
-     * the corners or diagonally and those neighborhoods that do not.
+     * distinction between those neighborhoods that include those cells touching
+     * on the corners or diagonally and those neighborhoods that do not.
      */
     enum class GridNeighborhoodType {
         /**
          * @brief Moore neighborhood
          *
-         * @details Moore neighborhood types include diagonally-adjacent cells as
-         * neighbors.
+         * @details Moore neighborhood types include diagonally-adjacent cells
+         * as neighbors.
          */
         Moore,
 
@@ -78,9 +78,9 @@ namespace kami {
         /**
          * @brief Manhattan distance.
          *
-         * @details The Manhattan distance is the sum of the absolute value of the
-         * differences of the elements. This is commonly called the
-         * "taxicab distance," "rectilinear distance," or many other [formal
+         * @details The Manhattan distance is the sum of the absolute value of
+         * the differences of the elements. This is commonly called the "taxicab
+         * distance," "rectilinear distance," or many other [formal
          * names](https://en.wikipedia.org/wiki/Taxicab_geometry).
          */
         Manhattan,
@@ -88,10 +88,11 @@ namespace kami {
         /**
          * @brief Chebyshev distance.
          *
-         * @details The Chebyshev distance, also called the "chessboard" distance
-         * is the number of single point jumps necessary to move from one point to
-         * the next.  This can be likened to a king on a chessboard and the number
-         * of moves necessary to move from a given point to any other given point.
+         * @details The Chebyshev distance, also called the "chessboard"
+         * distance is the number of single point jumps necessary to move from
+         * one point to the next.  This can be likened to a king on a chessboard
+         * and the number of moves necessary to move from a given point to any
+         * other given point.
          */
         Chebyshev
     };
@@ -100,23 +101,18 @@ namespace kami {
      * @brief An abstract domain based on a gridded environment.
      *
      * @details All gridded domains are expected to consist of cells in a
-     * rectilinear grid where the cells are equal size and laid out in an ordered
-     * fashion.
+     * rectilinear grid where the cells are equal size and laid out in an
+     * ordered fashion.
      */
-    class LIBKAMI_EXPORT GridDomain
-            : public Domain {
-    };
+    class LIBKAMI_EXPORT GridDomain : public Domain {};
 
     /**
      * @brief An abstract for gridded coordinates.
      *
      * @details All gridded coordinates are expected to subclass `GridCoord`.
      */
-    class LIBKAMI_EXPORT GridCoord
-            : public Coord {
-
-    public:
-
+    class LIBKAMI_EXPORT GridCoord : public Coord {
+       public:
         /**
          * @brief Find the distance between two points
          *
@@ -133,7 +129,6 @@ namespace kami {
          * @returns the distance as a `double`
          */
         virtual double distance(std::shared_ptr<Coord>& p) const = 0;
-
     };
 
 }  // namespace kami

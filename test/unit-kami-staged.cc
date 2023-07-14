@@ -23,36 +23,29 @@
  * SOFTWARE.
  */
 
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
+#include <kami/agent.h>
+#include <kami/population.h>
+#include <kami/staged.h>
+
 #include <algorithm>
 #include <memory>
 #include <utility>
 #include <vector>
 
-#include <kami/agent.h>
-#include <kami/population.h>
-#include <kami/staged.h>
-
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
-
 using namespace kami;
 using namespace std;
 
-class TestAgent
-        : public StagedAgent {
-public:
-    AgentID step(shared_ptr<Model> model) override {
-        return get_agent_id();
-    }
+class TestAgent : public StagedAgent {
+   public:
+    AgentID step(shared_ptr<Model> model) override { return get_agent_id(); }
 
-    AgentID advance(shared_ptr<Model> model) override {
-        return get_agent_id();
-    }
+    AgentID advance(shared_ptr<Model> model) override { return get_agent_id(); }
 };
 
-class TestModel
-        : public Model {
-public:
+class TestModel : public Model {
+   public:
     shared_ptr<vector<AgentID>> retval;
 
     shared_ptr<Model> step() override {
@@ -66,9 +59,8 @@ public:
     }
 };
 
-class StagedSchedulerTest
-        : public ::testing::Test {
-protected:
+class StagedSchedulerTest : public ::testing::Test {
+   protected:
     shared_ptr<TestModel> mod = nullptr;
 
     void SetUp() override {
@@ -80,7 +72,7 @@ protected:
         static_cast<void>(mod->set_population(popul_foo));
         static_cast<void>(mod->set_scheduler(sched_foo));
 
-        for (auto i = 0; i < 10; i++) {
+        for(auto i = 0; i < 10; i++) {
             auto agent_foo = make_shared<TestAgent>();
             static_cast<void>(popul_foo->add_agent(agent_foo));
         }
@@ -91,9 +83,7 @@ TEST(StagedScheduler, DefaultConstructor) {
     // There is really no way this can go wrong, but
     // we add this check anyway in case of future
     // changes.
-    EXPECT_NO_THROW(
-            const StagedScheduler sched_foo;
-    );
+    EXPECT_NO_THROW(const StagedScheduler sched_foo;);
 }
 
 TEST_F(StagedSchedulerTest, step_interface1) {
@@ -120,7 +110,7 @@ TEST_F(StagedSchedulerTest, step_interface2) {
 
 TEST_F(StagedSchedulerTest, step_10000) {
     // Do it a lot...
-    for (auto i = 0; i < 10000; i++) {
+    for(auto i = 0; i < 10000; i++) {
         auto tval = mod->get_population()->get_agent_list();
         auto aval = mod->get_population()->get_agent_list();
         mod->step(std::move(aval));
@@ -132,11 +122,7 @@ TEST_F(StagedSchedulerTest, step_10000) {
     }
 }
 
-int main(
-        int argc,
-        char** argv
-) {
+int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
-

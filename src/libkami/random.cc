@@ -23,16 +23,16 @@
  * SOFTWARE.
  */
 
+#include <kami/error.h>
+#include <kami/model.h>
+#include <kami/random.h>
+#include <kami/sequential.h>
+
 #include <algorithm>
 #include <memory>
 #include <random>
 #include <utility>
 #include <vector>
-
-#include <kami/error.h>
-#include <kami/model.h>
-#include <kami/random.h>
-#include <kami/sequential.h>
 
 namespace kami {
 
@@ -40,31 +40,32 @@ namespace kami {
         this->_rng = std::move(rng);
     }
 
-    std::unique_ptr<std::vector<AgentID>>
-    RandomScheduler::step(
-            std::shared_ptr<Model> model,
-            std::unique_ptr<std::vector<AgentID>> agent_list
-    ) {
-        if (_rng == nullptr)
-            throw error::ResourceNotAvailable("No random number generator available");
+    std::unique_ptr<std::vector<AgentID>> RandomScheduler::step(
+        std::shared_ptr<Model> model,
+        std::unique_ptr<std::vector<AgentID>> agent_list) {
+        if(_rng == nullptr)
+            throw error::ResourceNotAvailable(
+                "No random number generator available");
 
         shuffle(agent_list->begin(), agent_list->end(), *_rng);
-        return std::move(this->SequentialScheduler::step(model, std::move(agent_list)));
+        return std::move(
+            this->SequentialScheduler::step(model, std::move(agent_list)));
     }
 
-    std::unique_ptr<std::vector<AgentID>>
-    RandomScheduler::step(
-            std::shared_ptr<ReporterModel> model,
-            std::unique_ptr<std::vector<AgentID>> agent_list
-    ) {
-        if (_rng == nullptr)
-            throw error::ResourceNotAvailable("No random number generator available");
+    std::unique_ptr<std::vector<AgentID>> RandomScheduler::step(
+        std::shared_ptr<ReporterModel> model,
+        std::unique_ptr<std::vector<AgentID>> agent_list) {
+        if(_rng == nullptr)
+            throw error::ResourceNotAvailable(
+                "No random number generator available");
 
         shuffle(agent_list->begin(), agent_list->end(), *_rng);
-        return std::move(this->SequentialScheduler::step(model, std::move(agent_list)));
+        return std::move(
+            this->SequentialScheduler::step(model, std::move(agent_list)));
     }
 
-    std::shared_ptr<std::mt19937> RandomScheduler::set_rng(std::shared_ptr<std::mt19937> rng) {
+    std::shared_ptr<std::mt19937> RandomScheduler::set_rng(
+        std::shared_ptr<std::mt19937> rng) {
         this->_rng = std::move(rng);
         return _rng;
     }

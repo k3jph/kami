@@ -23,27 +23,25 @@
  * SOFTWARE.
  */
 
-#include <list>
-#include <map>
-#include <memory>
-
 #include <kami/agent.h>
 #include <kami/kami.h>
 #include <kami/model.h>
 #include <kami/population.h>
 #include <kami/sequential.h>
 
-class MinimalAgent
-        : public kami::Agent {
-public:
+#include <list>
+#include <map>
+#include <memory>
+
+class MinimalAgent : public kami::Agent {
+   public:
     kami::AgentID step(std::shared_ptr<kami::Model> model) override {
         return this->get_agent_id();
     }
 };
 
-class MinimalModel
-        : public kami::Model {
-public:
+class MinimalModel : public kami::Model {
+   public:
     MinimalModel() {
         auto sched = std::make_shared<kami::SequentialScheduler>();
         set_scheduler(sched);
@@ -51,7 +49,7 @@ public:
         auto pop = std::make_shared<kami::Population>();
         set_population(pop);
 
-        for (auto i = 0; i < 10; i++) {
+        for(auto i = 0; i < 10; i++) {
             auto new_agent = std::make_shared<MinimalAgent>();
             pop->add_agent(new_agent);
         }
@@ -61,8 +59,7 @@ public:
 int main() {
     auto model = std::make_shared<MinimalModel>();
 
-    for (int i = 0; i < 10; i++)
-        model->step();
+    for(int i = 0; i < 10; i++) model->step();
 
     return 0;
 }

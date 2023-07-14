@@ -23,43 +23,33 @@
  * SOFTWARE.
  */
 
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 #include <kami/agent.h>
 #include <kami/error.h>
 #include <kami/population.h>
-
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
 
 using namespace kami;
 using namespace kami::error;
 using namespace std;
 
-class TestAgent
-        : public Agent {
-private:
+class TestAgent : public Agent {
+   private:
     int _x;
 
-public:
-    explicit TestAgent(int x)
-            :_x(x) {
-    };
+   public:
+    explicit TestAgent(int x) : _x(x){};
 
-    AgentID step(shared_ptr<Model> model) override {
-        return get_agent_id();
-    }
+    AgentID step(shared_ptr<Model> model) override { return get_agent_id(); }
 
-    int getval() {
-        return _x;
-    }
+    int getval() { return _x; }
 };
 
 TEST(Population, DefaultConstructor) {
     // There is really no way this can go wrong, but
     // we add this check anyway in case of future
     // changes.
-    EXPECT_NO_THROW(
-            const Population population_foo;
-    );
+    EXPECT_NO_THROW(const Population population_foo;);
 }
 
 TEST(Population, add_agent) {
@@ -90,7 +80,8 @@ TEST(Population, get_agent_by_id) {
     {
         Population population_foo;
         static_cast<void>(population_foo.add_agent(agent_foo));
-        auto agent_baz_opt = population_foo.get_agent_by_id(agent_foo->get_agent_id());
+        auto agent_baz_opt =
+            population_foo.get_agent_by_id(agent_foo->get_agent_id());
         EXPECT_TRUE(agent_baz_opt);
 
         auto agent_baz = dynamic_pointer_cast<TestAgent>(agent_baz_opt);
@@ -99,20 +90,24 @@ TEST(Population, get_agent_by_id) {
     {
         Population population_foo;
         static_cast<void>(population_foo.add_agent(agent_foo));
-        EXPECT_THROW(auto agent_baz_opt = population_foo.get_agent_by_id(agent_bar->get_agent_id()), AgentNotFound);
+        EXPECT_THROW(auto agent_baz_opt = population_foo.get_agent_by_id(
+                         agent_bar->get_agent_id()),
+                     AgentNotFound);
     }
     {
         Population population_foo;
         static_cast<void>(population_foo.add_agent(agent_foo));
         static_cast<void>(population_foo.add_agent(agent_bar));
 
-        auto agent_baz_opt = population_foo.get_agent_by_id(agent_foo->get_agent_id());
+        auto agent_baz_opt =
+            population_foo.get_agent_by_id(agent_foo->get_agent_id());
         EXPECT_TRUE(agent_baz_opt);
 
         auto agent_baz = dynamic_pointer_cast<TestAgent>(agent_baz_opt);
         EXPECT_EQ(agent_baz->getval(), 8675309);
 
-        auto agent_qux_opt = population_foo.get_agent_by_id(agent_bar->get_agent_id());
+        auto agent_qux_opt =
+            population_foo.get_agent_by_id(agent_bar->get_agent_id());
         EXPECT_TRUE(agent_qux_opt);
 
         auto agent_qux = dynamic_pointer_cast<TestAgent>(agent_qux_opt);
@@ -123,13 +118,15 @@ TEST(Population, get_agent_by_id) {
         static_cast<void>(population_foo.add_agent(agent_foo));
         static_cast<void>(population_foo.add_agent(agent_bar));
 
-        auto agent_qux_opt = population_foo.get_agent_by_id(agent_bar->get_agent_id());
+        auto agent_qux_opt =
+            population_foo.get_agent_by_id(agent_bar->get_agent_id());
         EXPECT_TRUE(agent_qux_opt);
 
         auto agent_qux = dynamic_pointer_cast<TestAgent>(agent_qux_opt);
         EXPECT_EQ(agent_qux->getval(), 1729);
 
-        auto agent_baz_opt = population_foo.get_agent_by_id(agent_foo->get_agent_id());
+        auto agent_baz_opt =
+            population_foo.get_agent_by_id(agent_foo->get_agent_id());
         EXPECT_TRUE(agent_baz_opt);
 
         auto agent_baz = dynamic_pointer_cast<TestAgent>(agent_baz_opt);
@@ -194,11 +191,7 @@ TEST(Population, get_agent_list) {
     }
 }
 
-int main(
-        int argc,
-        char** argv
-) {
+int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
-

@@ -23,16 +23,14 @@
  * SOFTWARE.
  */
 
-#include <kami/position.h>
-
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <kami/position.h>
 
 using namespace kami;
 
-class PositionTest
-        : public ::testing::Test {
-protected:
+class PositionTest : public ::testing::Test {
+   protected:
     Position pos_foo = GridCoord1D(5);
     Position pos_bar = GridCoord2D(2, 5);
 };
@@ -42,11 +40,7 @@ TEST_F(PositionTest, DefaultConstructor) {
     EXPECT_NE(pos_foo, pos_bar);
 }
 
-int main(
-        int argc,
-        char** argv
-) {
+int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
-

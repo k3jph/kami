@@ -29,18 +29,15 @@
 #define KAMI_POSITION_H
 //! @endcond
 
-#include <variant>
-
 #include <kami/grid1d.h>
 #include <kami/grid2d.h>
 
+#include <variant>
+
 namespace kami {
 
-    typedef std::variant<
-            GridCoord1D,
-            GridCoord2D
-    > Position;
+    typedef std::variant<GridCoord1D, GridCoord2D> Position;
 
 }
 
-#endif //KAMI_POSITION_H
+#endif  // KAMI_POSITION_H

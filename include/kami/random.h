@@ -29,13 +29,13 @@
 #define KAMI_RANDOM_H
 //! @endcond
 
-#include <memory>
-#include <random>
-#include <vector>
-
 #include <kami/kami.h>
 #include <kami/scheduler.h>
 #include <kami/sequential.h>
+
+#include <memory>
+#include <random>
+#include <vector>
 
 namespace kami {
     /**
@@ -47,9 +47,9 @@ namespace kami {
      * but is not guaranteed not to repeat.
      */
     class LIBKAMI_EXPORT RandomScheduler
-            : public SequentialScheduler,
-              std::enable_shared_from_this<RandomScheduler> {
-    public:
+        : public SequentialScheduler,
+          std::enable_shared_from_this<RandomScheduler> {
+       public:
         /**
          * @brief Constructor.
          */
@@ -74,11 +74,9 @@ namespace kami {
          *
          * @returns returns vector of agents successfully stepped
          */
-        std::unique_ptr<std::vector<AgentID>>
-        step(
-                std::shared_ptr<Model> model,
-                std::unique_ptr<std::vector<AgentID>> agent_list
-        ) override;
+        std::unique_ptr<std::vector<AgentID>> step(
+            std::shared_ptr<Model> model,
+            std::unique_ptr<std::vector<AgentID>> agent_list) override;
 
         /**
          * @brief Execute a single time step for a `ReporterModel`
@@ -91,36 +89,34 @@ namespace kami {
          *
          * @returns returns vector of agents successfully stepped
          */
-        std::unique_ptr<std::vector<AgentID>>
-        step(
-                std::shared_ptr<ReporterModel> model,
-                std::unique_ptr<std::vector<AgentID>> agent_list
-        ) override;
+        std::unique_ptr<std::vector<AgentID>> step(
+            std::shared_ptr<ReporterModel> model,
+            std::unique_ptr<std::vector<AgentID>> agent_list) override;
 
         /**
          * @brief Set the RNG
          *
-         * @details Set the random number generator used to randomize the order of agent
-         * stepping.
+         * @details Set the random number generator used to randomize the order
+         * of agent stepping.
          *
-         * @param rng [in] A uniform random number generator of type `std::mt19937`,
-         * used as the source of randomness.
+         * @param rng [in] A uniform random number generator of type
+         * `std::mt19937`, used as the source of randomness.
          *
          * @returns a shared pointer to the random number generator
          */
-        std::shared_ptr<std::mt19937> set_rng(std::shared_ptr<std::mt19937> rng);
+        std::shared_ptr<std::mt19937> set_rng(
+            std::shared_ptr<std::mt19937> rng);
 
         /**
          * @brief Get the RNG
          *
-         * @details Get a reference to the random number generator used to randomize
-         * the order of agent stepping.
+         * @details Get a reference to the random number generator used to
+         * randomize the order of agent stepping.
          */
         std::shared_ptr<std::mt19937> get_rng();
 
-    private:
+       private:
         std::shared_ptr<std::mt19937> _rng = nullptr;
-
     };
 
 }  // namespace kami

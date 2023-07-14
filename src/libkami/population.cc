@@ -23,26 +23,28 @@
  * SOFTWARE.
  */
 
-#include <algorithm>
-#include <utility>
-#include <vector>
-
 #include <kami/agent.h>
 #include <kami/error.h>
 #include <kami/population.h>
 
+#include <algorithm>
+#include <utility>
+#include <vector>
+
 namespace kami {
 
-    AgentID Population::add_agent(const std::shared_ptr<Agent>& agent) noexcept {
+    AgentID Population::add_agent(
+        const std::shared_ptr<Agent>& agent) noexcept {
         auto agent_id = agent->get_agent_id();
-        _agent_map.insert(std::pair<AgentID, std::shared_ptr<Agent>>(agent_id, agent));
+        _agent_map.insert(
+            std::pair<AgentID, std::shared_ptr<Agent>>(agent_id, agent));
         return agent->get_agent_id();
     }
 
     std::shared_ptr<Agent> Population::delete_agent(const AgentID agent_id) {
         auto agent_it = _agent_map.find(agent_id);
 
-        if (agent_it == _agent_map.end())
+        if(agent_it == _agent_map.end())
             throw error::ResourceNotAvailable("Agent not found in population");
 
         auto agent = agent_it->second;
@@ -50,23 +52,23 @@ namespace kami {
         return std::move(agent);
     }
 
-    std::shared_ptr<Agent> Population::get_agent_by_id(const AgentID agent_id) const {
+    std::shared_ptr<Agent> Population::get_agent_by_id(
+        const AgentID agent_id) const {
         auto agent_it = _agent_map.find(agent_id);
 
-        if (agent_it == _agent_map.end())
+        if(agent_it == _agent_map.end())
             throw error::AgentNotFound("Agent not found in population");
 
         return agent_it->second;
     }
 
     std::unique_ptr<std::vector<AgentID>> Population::get_agent_list() const {
-        auto key_selector = [](auto pair)
-        {
-          return pair.first;
-        };
-        auto agent_ids = std::make_unique<std::vector<AgentID>>(_agent_map.size());
+        auto key_selector = [](auto pair) { return pair.first; };
+        auto agent_ids =
+            std::make_unique<std::vector<AgentID>>(_agent_map.size());
 
-        transform(_agent_map.begin(), _agent_map.end(), agent_ids->begin(), key_selector);
+        transform(_agent_map.begin(), _agent_map.end(), agent_ids->begin(),
+                  key_selector);
         return std::move(agent_ids);
     }
 
